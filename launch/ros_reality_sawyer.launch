@@ -1,0 +1,11 @@
+<launch>
+	<include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch" />
+
+	<!-- <node pkg="dynamic_reconfigure" type="dynparam" name="dynparam" args="set /camera/driver depth_registration true" /> -->
+
+	<node name="right_gripper_urdf_update_node" pkg="intera_interface" type="send_urdf_fragment.py" args="-f $(find ros_reality_bridge)/urdf/sawyer_electric_gripper.urdf.xacro" />
+	<node name="ros_reality_node" pkg="ros_reality_bridge" type="unityNode.py" />	
+	<node name="right_image_compressor" pkg="image_transport" type="republish" args="raw in:=/io/internal_camera/right_hand_camera/image_raw compressed out:=/cameras/right_hand_camera/image_compressed" />
+	<!-- <node name="right_image_compressor" pkg="image_transport" type="republish" args="raw in:=/cameras/right_hand_camera/image compressed out:=/cameras/right_hand_camera/image_compressed" /> -->
+	<param name="/cameras/right_hand_camera/image_compressed/compressed/jpeg_quality" value="80" type="double" />
+</launch>

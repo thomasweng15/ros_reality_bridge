@@ -13,7 +13,10 @@ def message_builder(link_dict):
         msg (string): the message
     """
     msg = ""
+#    rospy.logerr(link_dict)
     for k, v in link_dict.iteritems():
+        if v == None:
+            continue
         trans, rot = v
         trans = [float("{0:.3f}".format(n)) for n in trans]
         rot = [float("{0:.3f}".format(n)) for n in rot]

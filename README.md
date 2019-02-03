@@ -26,3 +26,19 @@ To start ROS Reality, simply run the following command on your Baxter workstatio
 
 Great, now this computer is sending information about the ROS network. Go to your Unity computer and follow the intstructions here: https://github.com/h2r/ROS_Unity
 
+# Running Sawyer ROS Reality
+
+1. Start the Asus Xtion Pro camera: `roslaunch openni2_launch openni2.launch`
+
+2. Run ROS Reality Bridge: `roslaunch ros_reality_bridge ros_reality_bridge.launch`
+
+# Step by step instructions (RPAD)
+
+1. Set up ros_reality_bridge on ROS Ubuntu machine. Build and source setup.bach
+2. Install Visual Studio, SteamVR, Unity 2017.1 through the Unity Hub on Windows machine
+3. Download ros_reality_legacy on Windows machine
+4. Open Unity scene included in ros_reality_legacy, e.g. PositionControl
+5. Update the websocket script IP and port
+6. On the linux machine, roslaunch ros_reality_bridge ros_reality_sawyer.launch to start the rosbridge server.
+7. On the Windows machine, press the run button and see if the sawyer gripper appears in the scene. If you don't see anything, check the console output to see if there is anything wrong. You can also add Debug.Log() lines to the source code and rebuild in Visual Studio to print out statements to the Unity console. 
+8. 
