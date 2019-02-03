@@ -21,13 +21,14 @@ def ik_solve(limb, point, quaternion):
         str(limb): PoseStamped(header=hdr,
             pose=Pose(position=point, orientation=quaternion))}
     ikreq.pose_stamp.append(poses[limb])
+    ikreq.tip_names.append('right_hand')
     try:
-        #rospy.wait_for_service(ns, 0.5)
+        rospy.wait_for_service(ns, 0.5)
         resp = iksvc(ikreq)
-    except (rospy.ServiceException, rospy.ROSException), e:
+    except rospy.ROSException as e:
         rospy.logerr("Service call failed: %s" % (e,))
         return 0
-    if (resp.isValid[0]):
+    if (resp.result_type[0] > 0):
         # Format solution into Limb API-compatible dictionary
         limb_joints = dict(zip(resp.joints[0].name, resp.joints[0].position))
         return limb_joints
@@ -88,7 +89,6 @@ def main():
     
     ik_fail_pub = rospy.Publisher('ros_reality_ik_status', String, queue_size=0)
 
-    rospy.logerr("hello")
     rospy.init_node('ros_reality_ik_interface')
 
     right_limb = intera_interface.Limb('right')
