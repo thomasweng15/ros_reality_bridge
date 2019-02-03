@@ -1,13 +1,14 @@
 #!/usr/bin/env python
 
 import rospy
-import baxter_interface
+import intera_interface
 
 from geometry_msgs.msg import PoseStamped, Pose, Point, Quaternion
 
 from std_msgs.msg import Header, String
 
-from baxter_core_msgs.srv import SolvePositionIK, SolvePositionIKRequest
+from intera_core_msgs.srv import SolvePositionIK, SolvePositionIKRequest
+
 
 
 def ik_solve(limb, point, quaternion):
@@ -43,8 +44,8 @@ def ik_handler(limb, msg):
     if limb_joints:
         if limb == 'right':
             right_limb.set_joint_positions(limb_joints)
-        else:
-            left_limb.set_joint_positions(limb_joints)
+        # else:
+        #     left_limb.set_joint_positions(limb_joints)
     else:
         ik_fail_pub.publish('f')
 
@@ -53,21 +54,21 @@ def gripper_handler(limb, msg):
         if limb == 'right':
             print "opening right gripper"
             right_gripper.open()
-        if limb == 'left':
-            print "opening left gripper"
-            left_gripper.open()
+     #    if limb == 'left':
+     #        print "opening left gripper"
+     #        left_gripper.open()
     if 'closeGripper' in msg:
         if limb == 'right':
             right_gripper.close()
-        if limb == 'left':
-            left_gripper.close()
+     #    if limb == 'left':
+     #        left_gripper.close()
 
 def pose_request_callback(data):
     # determine limb
     if 'right' in data._connection_header['topic']:
         limb = 'right'
-    else:
-        limb = 'left'
+    # else:
+    #     limb = 'left'
 
     # get message
     msg = data.data
@@ -82,29 +83,31 @@ def pose_request_callback(data):
 
 def main():
     global right_limb, right_gripper
-    global left_limb, left_gripper, ik_fail_pub
+    global ik_fail_pub
+    # global left_limb, left_gripper, ik_fail_pub
     
     ik_fail_pub = rospy.Publisher('ros_reality_ik_status', String, queue_size=0)
 
+    rospy.logerr("hello")
     rospy.init_node('ros_reality_ik_interface')
 
-    right_limb = baxter_interface.Limb('right')
-    right_gripper = baxter_interface.Gripper('right')
+    right_limb = intera_interface.Limb('right')
+    right_gripper = intera_interface.Gripper('right')
 
-    left_limb = baxter_interface.Limb('left')
-    left_gripper = baxter_interface.Gripper('left')
+    # left_limb = intera_interface.Limb('left')
+    # left_gripper = intera_interface.Gripper('left')
 
     # gripper calibrating 
-    if not right_gripper.calibrated():
-        right_gripper.calibrate()
-    if not left_gripper.calibrated():
-        left_gripper.calibrate()
+    # if not right_gripper.calibrated():
+    #     right_gripper.calibrate()
+    # if not left_gripper.calibrated():
+    #     left_gripper.calibrate()
 
     right_gripper.open()
-    left_gripper.open()
+    # left_gripper.open()
 
     rospy.Subscriber('/ein/right/forth_commands', String, pose_request_callback)
-    rospy.Subscriber('/ein/left/forth_commands', String, pose_request_callback)
+    # rospy.Subscriber('/ein/left/forth_commands', String, pose_request_callback)
 
     rospy.spin()
 
