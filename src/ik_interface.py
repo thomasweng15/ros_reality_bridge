@@ -45,6 +45,7 @@ def ik_handler(limb, msg):
     if limb_joints:
         if limb == 'right':
             right_limb.set_joint_positions(limb_joints)
+	    rospy.sleep(0.01)
         # else:
         #     left_limb.set_joint_positions(limb_joints)
     else:
@@ -106,7 +107,7 @@ def main():
     right_gripper.open()
     # left_gripper.open()
 
-    rospy.Subscriber('/ein/right/forth_commands', String, pose_request_callback)
+    rospy.Subscriber('/ein/right/forth_commands', String, pose_request_callback, queue_size=1)
     # rospy.Subscriber('/ein/left/forth_commands', String, pose_request_callback)
 
     rospy.spin()
